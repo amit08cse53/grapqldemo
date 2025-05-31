@@ -1,0 +1,76 @@
+mutation {
+  createProduct(
+    title: "First Product",
+    brand: "Example Brand",
+    category: "Electronics",
+    description: "A new product description.",
+    discountPercentage: 5,
+    images: "image path",
+    price: 299.99,
+    rating: 4.7,
+    stock: 5,
+    thumbnail: "thumbnail path",
+  ) {
+    id
+    title
+  }
+}
+
+mutation {
+  updateProduct(id:"653fbae451de02c94aef4382", description: "Update description for the first product"){
+    id,
+    description,
+    title
+  }
+}
+
+mutation{
+  deleteProduct(id:"653fbae451de02c94aef4382"){
+    id
+  }
+}
+
+query{
+  getAllProduct{
+    id,
+    title,
+    brand
+  }
+}
+
+query {
+  getProduct(id: "653fcc789b3cf5f5cfa3e48d") {
+    id
+    title
+    brand
+    category
+    description
+    price
+    stock
+  }
+}
+
+mutation{
+  createUser(username:"testUsername", 
+             email:"test@gmail.com", 
+             password: "testPassword", 
+             isAdmin: false)
+}
+
+mutation{
+  loginUser( email:"test@gmail.com", password: "testPassword")
+}
+
+getAllProduct: {
+      type: new GraphQLList(ProductType), 
+      args: { id: { type: GraphQLString } },
+      async resolve(parent, args ,req) {
+        
+    if (!req.isAuth) {
+          throw new Error("Unauthenticated");
+        }
+       
+        const productList = await Product.find();
+        return productList;
+      },
+    },
